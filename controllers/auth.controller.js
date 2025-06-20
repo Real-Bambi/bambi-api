@@ -35,7 +35,7 @@ export const signup = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role,
+      role: role || "user",
     });
 
     // Generate token
