@@ -2,50 +2,6 @@ import mongoose from "mongoose";
 import { Rating } from "../models/rating.model.js";
 import { Advert } from "../models/advert.model.js";
 
-//    Submit or update rating
-// export const rateAdvert = async (req, res) => {
-//   try {
-//     const { advertId, stars } = req.body;
-
-//     if (!advertId || !stars) {
-//       return res.status(400).json({ message: "Advert ID and stars are required" });
-//     }
-
-//     if (stars < 1 || stars > 5) {
-//       return res.status(400).json({ message: "Rating must be between 1 and 5 stars" });
-//     }
-
-//     // Check if advert exists
-//     const advert = await Advert.findById(advertId);
-//     if (!advert) {
-//       return res.status(404).json({ message: "Advert not found" });
-//     }
-
-//     // Check if the user has already rated
-//     const existingRating = await Rating.findOne({ advert: advertId, user: req.user.id });
-
-//     let rating;
-//     if (existingRating) {
-//       existingRating.stars = stars;
-//       rating = await existingRating.save();
-//     } else {
-//       rating = await Rating.create({
-//         advert: advertId,
-//         user: req.user.id,
-//         stars,
-//       });
-//     }
-
-//     res.status(200).json({
-//       message: "Rating submitted successfully",
-//       rating,
-//     });
-//   } catch (error) {
-//     console.error("Rate advert error:", error.message);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
-
 
 
 export const rateAdvert = async (req, res) => {
@@ -64,6 +20,11 @@ export const rateAdvert = async (req, res) => {
     const advert = await Advert.findById(advertId);
     if (!advert) {
       return res.status(404).json({ message: "Advert not found" });
+    }
+
+    // ✅ Prevent vendor from rating their own advert
+    if (advert.vendor.toString() === req.user.id) {
+      return res.status(403).json({ message: "Vendors can't rate their own adverts" });
     }
 
     // Check if the user has already rated
@@ -109,6 +70,7 @@ export const rateAdvert = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 
