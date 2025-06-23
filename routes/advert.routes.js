@@ -1,5 +1,5 @@
 import express from "express";
-import { createAdvert, getAllAdverts, getAdvertById, updateAdvert, deleteAdvert } from "../controllers/advert.controller.js";
+import { createAdvert, getAllAdverts, getAdvertById, updateAdvert, deleteAdvert, getMyAdverts } from "../controllers/advert.controller.js";
 import { protectRoute, restrictTo } from "../middlewares/auth.js";
 import upload from "../middlewares/upload.js";
 
@@ -15,7 +15,10 @@ advertRouter.post(
 );
 
 advertRouter.get("/", getAllAdverts);
+advertRouter.get("/my-adverts", protectRoute, restrictTo("vendor"), getMyAdverts);
 advertRouter.get("/:id", getAdvertById);
+
+
 
 advertRouter.put(
   "/:id",
@@ -31,5 +34,8 @@ advertRouter.delete(
   restrictTo("vendor"),
   deleteAdvert
 );
+
+
+
 
 

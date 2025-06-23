@@ -44,7 +44,7 @@ export const createAdvert = async (req, res) => {
 //with optional search/filter
 export const getAllAdverts = async (req, res) => {
   try {
-    const { category, price, search } = req.query;
+    const { category, price, title } = req.query;
 
     // Build dynamic query
     const query = {};
@@ -57,8 +57,8 @@ export const getAllAdverts = async (req, res) => {
       query.price = { $lte: Number(price) };
     }
 
-    if (search) {
-      query.title = { $regex: new RegExp(search, "i") };
+    if (title) {
+      query.title = { $regex: new RegExp(title, "i") };
     }
 
     const adverts = await Advert.find(query)
@@ -181,6 +181,23 @@ export const deleteAdvert = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+export const getMyAdverts = async (req, res) => {
+  try {
+    const adverts = await Advert.find({ vendor: req.user.id }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "Vendor adverts fetched successfully",
+      count: adverts.length,
+      adverts,
+    });
+  } catch (error) {
+    console.error("Get vendor adverts error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 
 
