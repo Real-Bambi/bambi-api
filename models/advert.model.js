@@ -18,6 +18,17 @@ const advertSchema = new mongoose.Schema(
         category: {
             type: String,
             required: [true, "Category is required"],
+            enum: {
+                values: [
+                    "automobiles",
+                    "consumable-goods",
+                    "fashion",
+                    "commercial-equipment",
+                    "beauty-and-personal-care",
+                    "animal-and-pets"
+                ],
+                message: "{VALUE} is not a valid category"
+            }
         },
         image: {
             url: {
@@ -46,11 +57,11 @@ const advertSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-         status: {
-      type: String,
-      enum: ["active", "inactive"],
-      default: "active",
-    },
+        status: {
+            type: String,
+            enum: ["active", "inactive"],
+            default: "active",
+        },
 
     },
     {
