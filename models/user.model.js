@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
     },
+    location: {
+      type: String,
+      required: [true, "Location is required"],
+    },
     role: {
       type: String,
       enum: ["vendor", "user"],

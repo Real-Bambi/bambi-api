@@ -17,7 +17,7 @@ export const signup = async (req, res) => {
     const { error } = signupSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
 
-    const { name, username, email, password, role } = req.body;
+    const { name, username, email, password, role, location } = req.body;
 
     // Check if email or username exists
     const emailExists = await User.findOne({ email });
@@ -36,6 +36,7 @@ export const signup = async (req, res) => {
       email,
       password: hashedPassword,
       role: role || "user",
+      location
     });
 
     // Generate token
@@ -49,6 +50,7 @@ export const signup = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        location: user.location
       },
       token,
     });

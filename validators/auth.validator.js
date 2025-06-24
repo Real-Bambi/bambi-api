@@ -11,6 +11,8 @@ export const signupSchema = Joi.object({
     .required()
     .messages({ "any.only": "Passwords must match" }),
   role: Joi.string().valid("user", "vendor").optional(),
+  location: Joi.string().min(2).max(100).required(),
+
 });
 
 

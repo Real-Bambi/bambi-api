@@ -5,4 +5,5 @@ export const advertSchema = Joi.object({
   description: Joi.string().min(10).required(),
   price: Joi.number().positive().required(),
   category: Joi.string().required(),
+  status: Joi.string().valid("active", "inactive").optional(),
 });
