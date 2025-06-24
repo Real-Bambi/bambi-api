@@ -16,7 +16,8 @@ export const createAdvert = async (req, res) => {
     }
 
     // 3. Upload image to Cloudinary
-    const uploadResult = await uploadToCloudinary(req.file.path, "adverts");
+    // const uploadResult = await uploadToCloudinary(req.file.path, "adverts");
+     const uploadResult = await uploadToCloudinary(req.file.buffer, "adverts");
 
     // 4. Create advert in DB
     const advert = await Advert.create({
