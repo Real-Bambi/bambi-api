@@ -40,12 +40,12 @@ export const signup = async (req, res) => {
     });
 
     // Generate token
-    const token = generateToken(user._id);
+    const token = generateToken(user.id);
 
     res.status(201).json({
       message: "Signup successful",
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         username: user.username,
         email: user.email,
@@ -60,7 +60,7 @@ export const signup = async (req, res) => {
   }
 };
 
-// @desc    Login user
+//  Login user
 export const login = async (req, res) => {
   try {
     // Validate input
@@ -83,7 +83,7 @@ export const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         username: user.username,
         email: user.email,

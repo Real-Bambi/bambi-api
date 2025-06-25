@@ -103,12 +103,65 @@ export const getAdvertById = async (req, res) => {
 };
 
 //   Update an advert (vendor only)
+// export const updateAdvert = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const advert = await Advert.findById(id);
+
+//     if (!advert) {
+//       return res.status(404).json({ message: "Advert not found" });
+//     }
+
+//     // Check if current user is the advert owner
+//     if (advert.vendor.toString() !== req.user.id) {
+//       return res.status(403).json({ message: "Not authorized to update this advert" });
+//     }
+
+//     // Optional: handle new image upload
+//     if (req.file) {
+//       // delete old image from Cloudinary
+//       await cloudinary.uploader.destroy(advert.image.public_id);
+
+//       // upload new one
+//       const result = await cloudinary.uploader.upload(req.file.path, {
+//         folder: "adverts",
+//       });
+
+//       advert.image = {
+//         url: result.secure_url,
+//         public_id: result.public_id,
+//       };
+//     }
+
+//     // Update text fields
+//     const fields = ["title", "description", "price", "category"];
+//     fields.forEach((field) => {
+//       if (req.body[field]) {
+//         advert[field] = req.body[field];
+//       }
+//     });
+
+//     const updated = await advert.save();
+
+//     res.status(200).json({
+//       message: "Advert updated successfully",
+//       advert: updated,
+//     });
+//   } catch (error) {
+//     console.error("Update advert error:", error.message);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+
+
+
 export const updateAdvert = async (req, res) => {
   try {
     const { id } = req.params;
 
     const advert = await Advert.findById(id);
-
     if (!advert) {
       return res.status(404).json({ message: "Advert not found" });
     }
@@ -121,12 +174,12 @@ export const updateAdvert = async (req, res) => {
     // Optional: handle new image upload
     if (req.file) {
       // delete old image from Cloudinary
-      await cloudinary.uploader.destroy(advert.image.public_id);
+      if (advert.image?.public_id) {
+        await cloudinary.uploader.destroy(advert.image.public_id);
+      }
 
-      // upload new one
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "adverts",
-      });
+      // upload new image to Cloudinary using buffer
+      const result = await uploadToCloudinary(req.file.buffer, "adverts");
 
       advert.image = {
         url: result.secure_url,
@@ -134,8 +187,8 @@ export const updateAdvert = async (req, res) => {
       };
     }
 
-    // Update text fields
-    const fields = ["title", "description", "price", "category"];
+    // Update allowed fields
+    const fields = ["title", "description", "price", "category", "status"];
     fields.forEach((field) => {
       if (req.body[field]) {
         advert[field] = req.body[field];
@@ -153,6 +206,7 @@ export const updateAdvert = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 //    Delete an advert (vendor only)
 export const deleteAdvert = async (req, res) => {
